@@ -1,0 +1,13 @@
+{
+ "compilerOptions": {
+   "module": "ESNext",
+   "moduleResolution": "bundler", // แนะนำสำหรับ Vite
+   "esModuleInterop": true,
+   "baseUrl": ".",
+   "paths": {
+     "@/*": ["src/*"]
+   }
+ },
+ "include": ["src"]
+}
+

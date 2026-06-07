@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema } from '@/validations/schema'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const defaultValue = {
 	firstName: "", lastName: "", identity: "",
@@ -18,11 +19,14 @@ function Register() {
 
 	const onSubmit = async data => {
 		try {
-			alert(JSON.stringify(data, null, 2))
+			// alert(JSON.stringify(data, null, 2))
 			const resp = await axios.post('http://localhost:8899/api/auth/register', data)
-			// console.log(resp)
+			console.log(resp)
+			toast.success(resp.data.message)
 		} catch (err) {
 			console.log(err)
+			const errMsg = err.response?.data.message || err.message
+			toast.error(errMsg)
 		}
 	}
 

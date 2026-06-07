@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema } from '@/validations/schema'
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { toast, Zoom } from 'react-toastify'
 import { mainApi } from '@/api/mainApi'
 
 const defaultValue = {
@@ -23,8 +23,10 @@ function Register() {
 			// alert(JSON.stringify(data, null, 2))
 			// const resp = await axios.post('http://localhost:8899/api/auth/register', data)
 			const resp = await mainApi.post('/auth/register', data)
-			console.log(resp)
-			toast.success(resp.data.message)
+			document.getElementById('register-form').close()
+      toast.success(resp.data.message, { transition: Zoom, autoClose: 4000 })
+			// console.log(resp)
+			// toast.success(resp.data.message)
 		} catch (err) {
 			console.log(err)
 			const errMsg = err.response?.data.message || err.message
@@ -70,6 +72,7 @@ function Register() {
 					<p className="text-sm text-error">{errors.confirmPassword?.message}</p>
 				</div>
 				<button className='btn btn-secondary text-xl text-white'>Sign up</button>
+				<button type='button' className="btn btn-base-200 text-xl" onClick={() => reset()} >Clear</button>
 			</form>
 			{/* <div className="border">
 				<pre className="text-error text-xs">

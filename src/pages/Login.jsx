@@ -21,7 +21,7 @@ function Login() {
 		try {
 			await new Promise(resolve => setTimeout(resolve, 1000))
 			const resp = await login(data)
-			toast.success(resp.data.message)
+			// toast.success(resp.data.message)
 		} catch (err) {
 			const errMsg = err.response?.data.message || err.message
 			toast.error(errMsg)

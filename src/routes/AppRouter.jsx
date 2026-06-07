@@ -1,8 +1,10 @@
+import UserLayout from '@/layouts/UserLayout'
 import Contact from '@/pages/Contact'
 import Friends from '@/pages/Friends'
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Profile from '@/pages/Profile'
+import useUserStore from '@/stores/userStore'
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router'
 
 const commonRoute =[
@@ -18,10 +20,7 @@ const guestRouter = createBrowserRouter([
 
 const userRouter = createBrowserRouter([
 	{
-		path: '/', element: <>
-			<p className='py-4 border'>Header</p>
-			<Outlet />
-		</>,
+		path: '/', Component: UserLayout ,
 		children: [
 			{ path: '', Component: Home },
 			{ path: 'friends', Component: Friends },
@@ -33,10 +32,10 @@ const userRouter = createBrowserRouter([
 ])
 
 function AppRouter() {
-	const user = null
+	const user = useUserStore(state => state.user)
 	const finalRouter = user ? userRouter : guestRouter
 	return (
-		<RouterProvider router={finalRouter} />
+		<RouterProvider key={user?.id} router={finalRouter} />
 	)
 }
 

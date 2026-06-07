@@ -1,7 +1,33 @@
 import Register from '@/components/Register'
-import React from 'react'
+import useUserStore from '@/stores/userStore'
+import { loginSchema } from '@/validations/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 function Login() {
+	const login = useUserStore(state => state.login)
+	const [closeModal, setCloseModal] = useState(false) //for reset RegisterForm
+	const { handleSubmit, register, formState, reset } = useForm({
+		resolver: zodResolver(loginSchema),
+		mode: 'onSubmit'
+	})
+	const { isSubmitting, errors } = formState
+
+	const hdlClose = () => setCloseModal(prv => !prv)
+
+	const onSubmit = async data => {
+		try {
+			await new Promise(resolve => setTimeout(resolve, 1000))
+			const resp = await login(data)
+			toast.success(resp.data.message)
+		} catch (err) {
+			const errMsg = err.response?.data.message || err.message
+			toast.error(errMsg)
+		}
+	}
+
 	return (
 		<>
 			<div className="h-175 pt-20 pb-28 bg-base-200 ">
@@ -15,22 +41,34 @@ function Login() {
 					</div>
 					<div className="flex flex-1 ">
 						<div className="card bg-base-100 w-full h-87.5 shadow-xl mt-8">
-							<form>
+							<form onSubmit={handleSubmit(onSubmit)}>
 								<div className="card-body gap-3 p-4">
-									<input type="text"
-										className='input w-full'
-										placeholder='E-mail or Phone number' />
-									<input type="password"
-										className='input w-full'
-										placeholder='password' />
-									<button className='btn btn-primary text-xl'>Login</button>
+									<div className="w-full">
+										<input type="text"
+											className='input w-full'
+											placeholder='E-mail or Phone number'
+											{...register('identity')}
+										/>
+										<p className="text-sm text-error">{errors.identity?.message}</p>
+									</div>
+									<div className="w-full">
+										<input type="password"
+											className='input w-full'
+											placeholder='password'
+											{...register('password')}
+										/>
+										<p className="text-sm text-error">{errors.password?.message}</p>
+									</div>
+									<button className='btn btn-primary text-xl' disabled={isSubmitting} >Login
+										 { isSubmitting && <span className="loading loading-dots loading-sm"></span> }
+									</button>
 									<p className="text-center cursor-pointer opacity-70">
 										Forgotten password?
 									</p>
 									<div className="divider my-0"></div>
 									<button className='btn btn-secondary text-lg  mx-auto'
 										type='button'
-										onClick={()=> document.querySelector('#register-form').showModal() }	
+										onClick={() => document.querySelector('#register-form').showModal()}
 									>Create new account</button>
 								</div>
 							</form>
